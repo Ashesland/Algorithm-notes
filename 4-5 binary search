@@ -18,3 +18,64 @@ int main(){
     int A[10]={1,3,4,6,7,8,10,11,12,15};
     printf("%d,%d\n",binarySearch(A,0,9,6),binarySearch(A,0,9,9));
 }
+
+//二分查找拓展
+//装水问题
+问题描述：一个侧面为半圆的储水装置，半径为R，往其中装入高度为h的水，使其在侧面看上去的面积S1同半圆面积S2的比值为r，现给定R和r，求高度h。
+思路：由r=s1/s2，s2不变，r为s1的递增函数。由二分法，可在[0，R]范围内寻找高度h，由关系式得出r值同给定值进行比较，进而逼近高度h的近似值。
+
+#include<cstdio>
+#include<cmath>
+const double PI=acos(-1.0);     //PI值
+const double eps=le-5;      //精度为10^-5
+double f(double R, double h){       //公示r=f(h),其中f严格递增
+    double alpha=2*acos((R-h)/R);
+    double L=2*sqrt(R*R-(R-h)*(R-h));       //大三角对应底边
+    double S1=alpha*R*R/2-L*(R-h)/2;
+    double S2=PI*R*R/2;
+    return S1/S2;
+}
+double solve(double R,double r){        //二分逼近h值
+    double left=0,right=R,mid;
+    while (right-left>eps){
+        mid=(left+right)/2;
+        if(f(R,mid)>r)
+            right=mid;
+        else
+            left=mid;
+     }
+     return mid;
+}
+int main(){
+    double R,r;
+    scanf("%lf%lf",&R,&r);
+    printf("%.4f\n",solve(R,r));
+    return 0;
+}
+
+//快速幂问题
+问题描述：给定三个整数a，b，m（a<10^9,b<10^18,m<10^9, 求a^b%m。
+当a，b，m足够小时，可用循环b次a求出，当数太大时则难以计算。
+考虑到：1) 当b为奇数时，有a^b=a*a^(b-1).
+       2）当b为偶数时，有a^b=(a^(b/2))^2.
+只需经过log(b)级别次数则算出，程序采用递归写法.
+#include<stdio.h>
+typedef long long LL;
+LL binaryPow(LL a,LL b,LL m){
+    if(b==0)        //临界条件
+        return 1;
+    if(b%2==1)  //若b为奇数
+        return a*binaryPow(a,b-1,m)%m;
+    else{       //b为偶数
+        LL mul=binaryPow(a,b/2,m);
+        return mul*mul%m;
+    }
+}
+
+
+
+
+
+
+
+
